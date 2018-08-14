@@ -138,3 +138,10 @@ CORS_ORIGIN_WHITELIST = (
 )
 
 AUTH_USER_MODEL = 'authentication.User'
+
+REST_FRAMEWORK = {
+    'NON_FIELD_ERRORS_KEY': 'error',
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'idltserver.apps.authentication.backends.JWTAuthentication',
+    ),
+}
