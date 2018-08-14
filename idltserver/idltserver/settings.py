@@ -43,6 +43,9 @@ INSTALLED_APPS = [
     'django_extensions',
     'rest_framework',
 
+    'idltserver.apps.authentication',
+    'idltserver.apps.core',
+
 ]
 
 MIDDLEWARE = [
@@ -133,3 +136,5 @@ CORS_ORIGIN_WHITELIST = (
     '0.0.0.0:4000',
     'localhost:4000',
 )
+
+AUTH_USER_MODEL = 'authentication.User'
