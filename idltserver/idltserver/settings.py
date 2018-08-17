@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'rest_framework',
 
     'idltserver.apps.authentication',
+    'idltserver.apps.articles',
     'idltserver.apps.core',
 
 ]

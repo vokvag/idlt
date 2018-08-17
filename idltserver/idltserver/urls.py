@@ -20,4 +20,5 @@ from django.conf.urls import include, url
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^api/', include(('idltserver.apps.authentication.urls','authentication'), namespace='authentication')),
+    url(r'^api/', include(('idltserver.apps.articles.urls','articles'), namespace='articles')),
 ]
