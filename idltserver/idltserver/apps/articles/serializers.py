@@ -38,10 +38,20 @@ class ProgrammingLanguageSerializer(serializers.ModelSerializer):
         model = ProgrammingLanguage
         fields = ('id','name')
 
+
+class FilteredListSerializer(serializers.ListSerializer):
+    def to_representation(self, data):
+        try:
+            data = data.filter(prolang=self.context['request'].GET['prolang'])
+        except:
+            pass
+        return super(FilteredListSerializer, self).to_representation(data)
+
 class ProgrammingLanguagewithCategorySerializer(serializers.ModelSerializer):
     plname = serializers.CharField(source='prolang.name')
     article = ArticleSerializer(many=True,read_only=True)
     class Meta:
+        list_serializer_class = FilteredListSerializer
         model = ProgrammingLanguagewithCategory
         fields = ('id','prolang','plname','category','article')
 
