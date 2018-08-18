@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'idltserver.apps.authentication',
     'idltserver.apps.articles',
     'idltserver.apps.core',
+    'idltserver.apps.profiles',
 
 ]
 
