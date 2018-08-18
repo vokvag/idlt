@@ -3,6 +3,7 @@ from idltserver.apps.core.renderers import IdltJSONRenderer
 class CategoryJSONRenderer(IdltJSONRenderer):
     object_label = 'categories'
 
+
     # def render(self, data, media_type=None, renderer_context=None):
     #     token = data.get('token', None)
 
@@ -10,3 +11,6 @@ class CategoryJSONRenderer(IdltJSONRenderer):
     #         data['token'] = token.decode('utf-8')
 
     #     return super(CategoryJSONRenderer, self).render(data)
+
+class ArticleJSONRenderer(IdltJSONRenderer):
+    object_label = 'articles'
