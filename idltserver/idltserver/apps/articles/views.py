@@ -7,7 +7,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from .models import Article, ProgrammingLanguage, ProgrammingLanguagewithCategory, Category
-from .renderers import CategoryJSONRenderer
+from .renderers import CategoryJSONRenderer, ArticleJSONRenderer
 from .serializers import ArticleSerializer, CategorySerializer, ProgrammingLanguageSerializer, ProgrammingLanguagewithCategorySerializer
 
 
@@ -18,9 +18,12 @@ class CategoryAPIView(generics.RetrieveAPIView):
 
     def retrieve(self, request):
         serializer_context = {'request': request}
-
         try:
-            serializer_instance = Category.objects.first()
+            category_id = request.GET['category']
+        except:
+            category_id = 1
+        try:
+            serializer_instance = Category.objects.get(id=category_id)
         except Category.DoesNotExist:
             raise NotFound('An article with this slug does not exist.')
 
@@ -31,6 +34,22 @@ class CategoryAPIView(generics.RetrieveAPIView):
 
         return Response(serializer.data, status=status.HTTP_200_OK)
     
+class ArticleViewSet(generics.RetrieveAPIView):
+    permission_classes = (AllowAny,)
+    serializer_class = ArticleSerializer
+    renderer_classes = (ArticleJSONRenderer,)
+
+    def retrieve(self, request):
+        serializer_context = {'request': request}
+        serializer = self.serializer_class(
+            Article.objects.first(),
+            context=serializer_context,
+        )
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+
 
 # class ArticleViewSet(mixins.CreateModelMixin,mixins.ListModelMixin,mixins.RetrieveModelMixin,viewsets.GenericViewSet):
 #     lookup_field = 'slug'
