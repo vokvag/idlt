@@ -7,6 +7,10 @@ class IdltJSONRenderer(JSONRenderer):
     object_label = 'object'
 
     def render(self, data, media_type=None, renderer_context=None):
+        if not hasattr(data,'get'):
+            return json.dumps({
+                self.object_label:data
+            })
 
         if data.get('errors', None) is not None:
             return super(IdltJSONRenderer, self).render(data)

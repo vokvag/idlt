@@ -14,3 +14,6 @@ class CategoryJSONRenderer(IdltJSONRenderer):
 
 class ArticleJSONRenderer(IdltJSONRenderer):
     object_label = 'articles'
+
+class ProgrammingLanguageJSONRenderer(IdltJSONRenderer):
+    object_label = 'prolangs'

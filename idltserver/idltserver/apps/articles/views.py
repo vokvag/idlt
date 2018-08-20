@@ -7,8 +7,30 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from .models import Article, ProgrammingLanguage, ProgrammingLanguagewithCategory, Category
-from .renderers import CategoryJSONRenderer, ArticleJSONRenderer
+from .renderers import CategoryJSONRenderer, ArticleJSONRenderer, ProgrammingLanguageJSONRenderer
 from .serializers import ArticleSerializer, CategorySerializer, ProgrammingLanguageSerializer, ProgrammingLanguagewithCategorySerializer
+
+
+class ProgrammingLanguageAPIView(generics.ListAPIView):
+    permission_classes = (AllowAny,)
+    serializer_class = ProgrammingLanguageSerializer
+    renderer_classes = (ProgrammingLanguageJSONRenderer,)
+    
+    
+    def list(self, request):
+        serializer_context = {'request': request}
+        try:
+            serializer_instance = ProgrammingLanguage.objects.all()
+        except ProgrammingLanguage.DoesNotExist:
+            raise NotFound('Can not find any programming language.')
+
+        serializer = self.serializer_class(
+            serializer_instance,
+            context=serializer_context,
+            many=True
+        )
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class CategoryAPIView(generics.RetrieveAPIView):
