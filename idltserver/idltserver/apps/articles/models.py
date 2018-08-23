@@ -37,7 +37,7 @@ class ProgrammingLanguagewithCategory(models.Model):
 
 
 class Article(TimestampedModel):
-    plwc= models.ForeignKey('articles.ProgrammingLanguagewithCategory',related_name='article', on_delete=models.CASCADE, db_index=True)
+    plwc= models.OneToOneField('articles.ProgrammingLanguagewithCategory',related_name='article', on_delete=models.CASCADE, db_index=True)
 
     title = models.CharField(db_index=True, max_length=255)
 
