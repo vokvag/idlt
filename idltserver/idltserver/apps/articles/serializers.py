@@ -47,9 +47,18 @@ class FilteredListSerializer(serializers.ListSerializer):
             pass
         return super(FilteredListSerializer, self).to_representation(data)
 
+
 class ProgrammingLanguagewithCategorySerializer(serializers.ModelSerializer):
     plname = serializers.CharField(source='prolang.name')
-    article = ArticleSerializer(many=True,read_only=True)
+    class Meta:
+        list_serializer_class = FilteredListSerializer
+        model = ProgrammingLanguagewithCategory
+        fields = ('id','prolang','plname','category')
+
+
+class ArticlesPLwithCategorySerializer(ProgrammingLanguagewithCategorySerializer):
+    article = ArticleSerializer(read_only=True)
+
     class Meta:
         list_serializer_class = FilteredListSerializer
         model = ProgrammingLanguagewithCategory
@@ -64,6 +73,13 @@ class CategorySerializer(serializers.ModelSerializer):
     subcategories = RecursiveField(many=True)
     pl = ProgrammingLanguagewithCategorySerializer(many=True,read_only=True)
 
+    class Meta:
+        model = Category
+        fields = ('id','name','sort_order','pl','subcategories')
+
+class ArticleswithCategorySerializer(serializers.ModelSerializer):
+    subcategories = RecursiveField(many=True)
+    pl = ArticlesPLwithCategorySerializer(many=True,read_only=True)
 
     class Meta:
         model = Category
