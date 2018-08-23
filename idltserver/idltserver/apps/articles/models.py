@@ -17,6 +17,8 @@ class Category(models.Model):
 
     sort_order = models.IntegerField()
 
+    nameslug = models.CharField(db_index=True, max_length=255,blank=True)
+
     def __str__(self):
         return self.name
 
