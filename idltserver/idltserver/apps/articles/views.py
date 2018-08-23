@@ -8,7 +8,13 @@ from rest_framework.views import APIView
 
 from .models import Article, ProgrammingLanguage, ProgrammingLanguagewithCategory, Category
 from .renderers import CategoryJSONRenderer, ArticleJSONRenderer, ProgrammingLanguageJSONRenderer
-from .serializers import ArticleSerializer, CategorySerializer, ProgrammingLanguageSerializer, ProgrammingLanguagewithCategorySerializer
+from .serializers import (
+    ArticleSerializer, 
+    CategorySerializer, 
+    ProgrammingLanguageSerializer, 
+    ProgrammingLanguagewithCategorySerializer,
+    ArticleswithCategorySerializer
+)
 
 
 class ProgrammingLanguageAPIView(generics.ListAPIView):
@@ -41,9 +47,28 @@ class CategoryAPIView(generics.RetrieveAPIView):
     def retrieve(self, request):
         serializer_context = {'request': request}
         try:
+            serializer_instance = Category.objects.get(id=0)
+        except Category.DoesNotExist:
+            raise NotFound('the Category with this slug does not exist.')
+
+        serializer = self.serializer_class(
+            serializer_instance,
+            context=serializer_context
+        )
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+class ArticleAPIView(generics.RetrieveAPIView):
+    permission_classes = (AllowAny,)
+    serializer_class = ArticleswithCategorySerializer
+    renderer_classes = (ArticleJSONRenderer,)
+
+    def retrieve(self, request):
+        serializer_context = {'request': request}
+        try:
             category_id = request.GET['category']
         except:
-            category_id = 1
+            category_id = 0
         try:
             serializer_instance = Category.objects.get(id=category_id)
         except Category.DoesNotExist:
@@ -55,22 +80,6 @@ class CategoryAPIView(generics.RetrieveAPIView):
         )
 
         return Response(serializer.data, status=status.HTTP_200_OK)
-    
-class ArticleViewSet(generics.RetrieveAPIView):
-    permission_classes = (AllowAny,)
-    serializer_class = ArticleSerializer
-    renderer_classes = (ArticleJSONRenderer,)
-
-    def retrieve(self, request):
-        serializer_context = {'request': request}
-        serializer = self.serializer_class(
-            Article.objects.first(),
-            context=serializer_context,
-        )
-
-        return Response(serializer.data, status=status.HTTP_200_OK)
-
-
 
 
 # class ArticleViewSet(mixins.CreateModelMixin,mixins.ListModelMixin,mixins.RetrieveModelMixin,viewsets.GenericViewSet):
