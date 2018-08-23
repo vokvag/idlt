@@ -65,14 +65,24 @@ class ArticleAPIView(generics.RetrieveAPIView):
 
     def retrieve(self, request):
         serializer_context = {'request': request}
-        try:
-            category_id = request.GET['category']
-        except:
-            category_id = 0
-        try:
-            serializer_instance = Category.objects.get(id=category_id)
-        except Category.DoesNotExist:
-            raise NotFound('An article with this slug does not exist.')
+        if('nameslug' in request.GET):
+            try:
+                name_slug = request.GET['nameslug']
+            except:
+                name_slug = "root"
+            try:
+                serializer_instance = Category.objects.get(nameslug=name_slug)
+            except Category.DoesNotExist:
+                raise NotFound('An article with this slug does not exist.')
+        else: 
+            try:
+                category_id = request.GET['category']
+            except:
+                category_id = 0
+            try:
+                serializer_instance = Category.objects.get(id=category_id)
+            except Category.DoesNotExist:
+                raise NotFound('An article with this slug does not exist.')
 
         serializer = self.serializer_class(
             serializer_instance,
