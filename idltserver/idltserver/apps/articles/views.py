@@ -78,8 +78,14 @@ class ArticleAPIView(generics.RetrieveAPIView):
             serializer_instance,
             context=serializer_context
         )
-
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        serializerdata = serializer.data
+        try:
+            subcate = request.GET['subcategory']
+        except:
+            subcate = "yes"
+        if(subcate == "no"):
+            serializerdata.pop('subcategories')
+        return Response(serializerdata, status=status.HTTP_200_OK)
 
 
 # class ArticleViewSet(mixins.CreateModelMixin,mixins.ListModelMixin,mixins.RetrieveModelMixin,viewsets.GenericViewSet):

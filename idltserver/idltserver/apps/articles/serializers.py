@@ -41,10 +41,10 @@ class ProgrammingLanguageSerializer(serializers.ModelSerializer):
 
 class FilteredListSerializer(serializers.ListSerializer):
     def to_representation(self, data):
-        try:
-            data = data.filter(prolang=self.context['request'].GET['prolang'])
-        except:
-            pass
+        if('prolang1' in self.context['request'].GET and 'prolang2' in self.context['request'].GET):
+                data = data.filter(prolang=self.context['request'].GET['prolang1']) | data.filter(prolang=self.context['request'].GET['prolang2'])
+        elif('prolang1' in self.context['request'].GET):
+                data = data.filter(prolang=self.context['request'].GET['prolang1'])
         return super(FilteredListSerializer, self).to_representation(data)
 
 
@@ -75,7 +75,7 @@ class CategorySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Category
-        fields = ('id','name','sort_order','pl','subcategories')
+        fields = ('id','name','nameslug','sort_order','pl','subcategories')
 
 class ArticleswithCategorySerializer(serializers.ModelSerializer):
     subcategories = RecursiveField(many=True)
@@ -83,5 +83,5 @@ class ArticleswithCategorySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Category
-        fields = ('id','name','pl','subcategories')
+        fields = ('id','name','nameslug','pl','subcategories')
 
