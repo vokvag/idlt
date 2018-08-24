@@ -4,7 +4,9 @@ import {
     ASYNC_END,
     LOGIN,
     LOGOUT,
-    REGISTER
+    REGISTER,
+    FIRST_PROGRAMMING_LANGUAGE_CHANGED,
+    SECOND_PROGRAMMING_LANGUAGE_CHANGED
 } from './constants/actionTypes'
 
 const promiseMiddleware = store => next => action => {
@@ -33,6 +35,7 @@ const promiseMiddleware = store => next => action => {
                 console.log('ERROR', error);
                 action.error = true;
                 action.payload = error.response.body;
+                //action.payload = error.response;
                 if (!action.skipTracking) {
                     store.dispatch({ type: ASYNC_END, promise: action.payload });
                 }
@@ -54,6 +57,10 @@ const localStorageMiddleware = store => next => action => {
     } else if (action.type === LOGOUT){
         window.localStorage.setItem('jwt', '');
         agent.setToken(null);
+    } else if (action.type === FIRST_PROGRAMMING_LANGUAGE_CHANGED){
+        window.localStorage.setItem('firstpl', action.firstpl);
+    } else if (action.type === SECOND_PROGRAMMING_LANGUAGE_CHANGED){
+        window.localStorage.setItem('secondpl', action.secondpl);
     }
     next(action);
 };
