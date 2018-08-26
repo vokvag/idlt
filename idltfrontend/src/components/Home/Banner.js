@@ -1,43 +1,22 @@
 import React from 'react';
-
-
-const DropDown = prolangs => {
-    let pl = prolangs.prolangs   
-    if(pl !== null && pl !== undefined){
-    return (
-        
-        <select name="" id="">
-            {Object.keys(pl).map(ele=> {
-                return(
-                    <option key={pl[ele].id}>
-                        {pl[ele].name}
-                    </option>
-                );                
-            })}
-        </select>
-        
-    );
-}
-else{return null;}
-}
-
+import { Link } from 'react-router-dom';
+import logo from '../LogoBiggrey.png';
 
 const Banner = props => {
 
     return (
-        <div className="banner">
-            <div className="container">
-                <h1 className="logo-font">
-                    {props.appName.toLowerCase()}
-                </h1>
-                <p>Programming languages comparison & transition tool.</p>                
-                <span>
-                    Start from the first one:
-                    <DropDown prolangs={props.prolangs}/>
-                    <button>GO!</button>
-                </span>
+        <section className="banner">
+            <div className="inner col-sm-10">
+                <img className="logo-big" src={logo} alt={props.appName.toLowerCase()}/>
+                <p className="banner-description">An awesome documentation
+                <br/> Used to compare different programming languages 
+                <br/>and help your knowledge transfer.</p>              
+                <Link to={`/article`}>Start!</Link>
             </div>
-        </div>
+            <div className="banner-footer">
+                <a href="" className="more scrolly">Learn More</a>
+            </div>
+        </section>
     );
 }
 
