@@ -1,0 +1,43 @@
+.home-page {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+}
+
+.banner {
+    position: relative;
+    width: 100%;
+    height:100%;
+    padding:25px;
+
+}
+
+.banner .inner {
+    /* width: 600px;*/
+    height: 25%;
+    position: absolute;
+    top:0;
+    bottom:40%;
+    left:0;
+    right: 0;
+    margin:auto;
+    text-align: center;
+}
+
+.banner-footer {
+    position: absolute;
+    bottom: 10%;
+    left: 0;
+    width: 100%;
+    text-align: center;
+}
+
+.logo-big {
+    height:100%;
+    padding-bottom: 50px;
+}
+
+.banner-description {
+    letter-spacing: .225em;
+    text-transform: uppercase;
+}
