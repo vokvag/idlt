@@ -1,4 +1,5 @@
 import Banner from './Banner';
+import MainView from './MainView';
 import React from 'react';
 import agent from '../../agent';
 import { connect } from 'react-redux';
@@ -6,14 +7,13 @@ import {
     HOME_PAGE_LOADED,
     HOME_PAGE_UNLOADED
 } from '../../constants/actionTypes';
-
+import './Home.css';
 const Promise = global.Promise;
 
 const mapStateToProps = state => ({
     ...state.home,
     appName: state.common.appName,
     token: state.common.token,
-    //prolangs: state.home.prolangs,
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -25,7 +25,7 @@ const mapDispatchToProps = dispatch => ({
 
 class Home extends React.Component {
     componentWillMount() {
-        this.props.onLoad(Promise.all([agent.Prolang.get()]))
+        this.props.onLoad(null)
     }
 
     componentWillUnmount() {
@@ -35,10 +35,10 @@ class Home extends React.Component {
     render() {
         return (
             <div className="home-page">
-                <Banner appName={this.props.appName} prolangs={this.props.prolangs}/>
+                <Banner appName={this.props.appName}/>
                 <div className="container page">
                     <div className="row">
-                        {/* <MainView /> */}
+                        <MainView />
                         <div className="col-md-3">
                             <div className="sidebar">
                                 
