@@ -1,0 +1,29 @@
+.nav-side-menu {
+    background-color: #eee;
+    border-color: #ccc;
+    border-style: solid;
+    border-width: 0 1px 0 0;
+    height: 100%;
+    overflow: auto;
+    position: fixed;
+}
+
+.nav-side-menu .first-category{
+
+}
+
+.article-view {
+    /* background: linear-gradient(90deg, #fff 50%, #eee 50%); */
+    background-color: #fafafa;
+    height: 100%;
+    position: fixed;
+}
+
+.right {
+    margin-left: auto;
+    margin-right: 0;
+}
+
+.left {
+    background: #fff;
+}
