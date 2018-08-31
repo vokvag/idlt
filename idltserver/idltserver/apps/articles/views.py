@@ -1,7 +1,7 @@
 from rest_framework import generics, mixins, status, viewsets
 from rest_framework.exceptions import NotFound
 from rest_framework.permissions import (
-    AllowAny, IsAuthenticated, IsAuthenticatedOrReadOnly
+    AllowAny, IsAuthenticated, IsAuthenticatedOrReadOnly, IsAdminUser
 )
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -13,11 +13,12 @@ from .serializers import (
     CategorySerializer, 
     ProgrammingLanguageSerializer, 
     ProgrammingLanguagewithCategorySerializer,
-    ArticleswithCategorySerializer
+    ArticleswithCategorySerializer,
+    ArticlesPLwithCategorySerializer
 )
 
 
-class ProgrammingLanguageAPIView(generics.ListAPIView):
+class ProgrammingLanguageAPIView(generics.ListCreateAPIView):
     permission_classes = (AllowAny,)
     serializer_class = ProgrammingLanguageSerializer
     renderer_classes = (ProgrammingLanguageJSONRenderer,)
@@ -38,6 +39,14 @@ class ProgrammingLanguageAPIView(generics.ListAPIView):
 
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+    def create(self, request):
+        data = request.data.get('prolang', {})
+        serializer = self.serializer_class(data=data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
 
 class CategoryAPIView(generics.RetrieveAPIView):
     permission_classes = (AllowAny,)
@@ -57,7 +66,67 @@ class CategoryAPIView(generics.RetrieveAPIView):
         )
 
         return Response(serializer.data, status=status.HTTP_200_OK)
-    
+
+class CategoryEditViewSet(viewsets.GenericViewSet,mixins.CreateModelMixin,mixins.UpdateModelMixin,mixins.DestroyModelMixin):
+    permission_classes = (IsAdminUser,)
+    serializer_class = CategorySerializer
+    renderer_classes = (CategoryJSONRenderer,)
+    queryset = Category.objects.all()
+
+    def get_queryset(self): 
+        queryset = self.queryset
+        
+        return queryset
+
+    def create(self, request):
+        serializer_context = {
+            'request': request
+        }
+
+        serializer_data = request.data.get('category', {})
+        serializer = self.serializer_class(
+            data=serializer_data, context=serializer_context
+        )
+        
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    def update(self, request, pk):
+        serializer_context = {'request': request}
+
+        try:
+            serializer_instance = self.queryset.get(nameslug=pk)
+        except Category.DoesNotExist:
+            raise NotFound('An category with this nameslug does not exist.')
+
+        serializer_data = request.data.get('category', {})
+
+        serializer = self.serializer_class(
+            serializer_instance,
+            context=serializer_context,
+            data=serializer_data,
+            partial=True
+        )
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def destroy(self, request, pk):
+
+        try:
+            serializer_instance = self.queryset.get(nameslug=pk)
+        except Category.DoesNotExist:
+            raise NotFound('An category with this nameslug does not exist.')
+
+        self.perform_destroy(serializer_instance)
+
+        return Response(None, status=status.HTTP_204_NO_CONTENT)
+
+
+
 class ArticleAPIView(generics.RetrieveAPIView):
     permission_classes = (AllowAny,)
     serializer_class = ArticleswithCategorySerializer
@@ -98,93 +167,65 @@ class ArticleAPIView(generics.RetrieveAPIView):
         return Response(serializerdata, status=status.HTTP_200_OK)
 
 
-# class ArticleViewSet(mixins.CreateModelMixin,mixins.ListModelMixin,mixins.RetrieveModelMixin,viewsets.GenericViewSet):
-#     lookup_field = 'slug'
-#     queryset = Article.objects.select_related('author', 'author__user')
-#     permission_classes = (IsAuthenticatedOrReadOnly,)
-#     renderer_classes = (ArticleJSONRenderer,)
-#     serializer_class = ArticleSerializer
+class ArticleEditViewSet(viewsets.GenericViewSet,mixins.CreateModelMixin,mixins.DestroyModelMixin):
+    permission_classes = (IsAdminUser,)
+    serializer_class = ArticlesPLwithCategorySerializer
+    renderer_classes = (ArticleJSONRenderer,)
+    queryset = ProgrammingLanguagewithCategory.objects.select_related('article')
 
-#     def get_queryset(self):
-#         queryset = self.queryset
-
-#         author = self.request.query_params.get('author', None)
-#         if author is not None:
-#             queryset = queryset.filter(author__user__username=author)
+    def get_queryset(self): 
+        queryset = self.queryset
         
-#         tag = self.request.query_params.get('tag', None)
-#         if tag is not None:
-#             queryset = queryset.filter(tags__tag=tag)
+        return queryset
 
-#         favorited_by = self.request.query_params.get('favorited', None)
-#         if favorited_by is not None:
-#             queryset = queryset.filter(
-#                 favorited_by__user__username=favorited_by
-#             )
+    def create(self, request):
+        serializer_context = {
+            'article': request.data.get('newarticle').get('article'),
+            'request': request
+        }
+        serializer_data = request.data.get('newarticle', {})
+        serializer = self.serializer_class(
+            data=serializer_data, context=serializer_context
+        )
         
-#         return queryset
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
 
-#     def create(self, request):
-#         serializer_context = {
-#             'author': request.user.profile,
-#             'request': request
-#         }
-#         serializer_data = request.data.get('article', {})
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-#         serializer = self.serializer_class(
-#             data=serializer_data, context=serializer_context
-#         )
+    def destroy(self, request, pk):
 
-#         serializer.is_valid(raise_exception=True)
-#         serializer.save()
+        try:
+            serializer_instance = self.queryset.get(id=pk)
+        except Category.DoesNotExist:
+            raise NotFound('An category with this nameslug does not exist.')
 
-#         return Response(serializer.data, status=status.HTTP_201_CREATED)
+        self.perform_destroy(serializer_instance)
 
-#     def list(self, request):
-#         serializer_context = {'request': request}
-#         page = self.paginate_queryset(self.get_queryset())
+        return Response(None, status=status.HTTP_204_NO_CONTENT)
 
-#         serializer = self.serializer_class(
-#             page,
-#             context=serializer_context,
-#             many=True
-#         )
+class ArticleUpdateAPIView(generics.UpdateAPIView):
+    permission_classes = (IsAdminUser,)
+    serializer_class = ArticleSerializer
+    renderer_classes = (ArticleJSONRenderer,)
 
-#         return self.get_paginated_response(serializer.data)
+    def update(self, request, plwc):
+        serializer_context = {'request': request}
 
-#     def retrieve(self, request, slug):
-#         serializer_context = {'request': request}
+        try:
+            serializer_instance = Article.objects.get(plwc=plwc)
+        except Article.DoesNotExist:
+            raise NotFound('The Article with this plwc_id does not exist.')
 
-#         try:
-#             serializer_instance = self.queryset.get(slug=slug)
-#         except Article.DoesNotExist:
-#             raise NotFound('An article with this slug does not exist.')
+        serializer_data = request.data.get('article', {})
 
-#         serializer = self.serializer_class(
-#             serializer_instance,
-#             context=serializer_context
-#         )
+        serializer = self.serializer_class(
+            serializer_instance,
+            context=serializer_context,
+            data=serializer_data,
+            partial=True
+        )
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
 
-#         return Response(serializer.data, status=status.HTTP_200_OK)
-
-#     def update(self, request, slug):
-#         serializer_context = {'request': request}
-
-#         try:
-#             serializer_instance = self.queryset.get(slug=slug)
-#         except Article.DoesNotExist:
-#             raise NotFound('An article with this slug does not exist.')
-
-#         serializer_data = request.data.get('article', {})
-
-#         serializer = self.serializer_class(
-#             serializer_instance,
-#             context=serializer_context,
-#             data=serializer_data,
-#             partial=True
-#         )
-#         serializer.is_valid(raise_exception=True)
-#         serializer.save()
-
-#         return Response(serializer.data, status=status.HTTP_200_OK)
-
+        return Response(serializer.data, status=status.HTTP_200_OK)

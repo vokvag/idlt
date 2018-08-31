@@ -5,8 +5,6 @@ from .models import (
 )
 
 class ArticleSerializer(serializers.ModelSerializer):
-    #plwc = serializers.RelatedField(source='plwc', read_only=True)
-
     createdAt = serializers.SerializerMethodField(method_name='get_created_at')
     updatedAt = serializers.SerializerMethodField(method_name='get_updated_at')
 
@@ -19,10 +17,6 @@ class ArticleSerializer(serializers.ModelSerializer):
             'createdAt',
             'updatedAt'
         )
-
-    # def create(self, validated_data):
-    #     category = self.context.get('category', None)
-    #     return Article.objects.create(category=category, **validated_data)
 
     def get_created_at(self, instance):
         return instance.created_at.isoformat()
@@ -49,7 +43,7 @@ class FilteredListSerializer(serializers.ListSerializer):
 
 
 class ProgrammingLanguagewithCategorySerializer(serializers.ModelSerializer):
-    plname = serializers.CharField(source='prolang.name')
+    plname = serializers.CharField(source='prolang.name', read_only=True)
     class Meta:
         list_serializer_class = FilteredListSerializer
         model = ProgrammingLanguagewithCategory
@@ -64,18 +58,34 @@ class ArticlesPLwithCategorySerializer(ProgrammingLanguagewithCategorySerializer
         model = ProgrammingLanguagewithCategory
         fields = ('id','prolang','plname','category','article')
 
+    def create(self, validated_data):
+        article = self.context.get('article',{})
+        title = article.get('title')
+        body = article.get('body')
+        plwc = ProgrammingLanguagewithCategory.objects.create(**validated_data)
+        Article.objects.create(plwc=plwc, title=title, body=body)
+
+        return plwc
+
+
 class RecursiveField(serializers.Serializer):
     def to_representation(self, value):
         serializer = self.parent.parent.__class__(value, context=self.context)
         return serializer.data
 
 class CategorySerializer(serializers.ModelSerializer):
-    subcategories = RecursiveField(many=True)
+    subcategories = RecursiveField(many=True,read_only=True)
     pl = ProgrammingLanguagewithCategorySerializer(many=True,read_only=True)
 
     class Meta:
         model = Category
-        fields = ('id','name','nameslug','sort_order','pl','subcategories')
+        fields = ('id','name','nameslug','sort_order','parentcategory','pl','subcategories')
+
+    def create(self, validated_data):
+
+        category = Category.objects.create(**validated_data)
+
+        return category
 
 class ArticleswithCategorySerializer(serializers.ModelSerializer):
     subcategories = RecursiveField(many=True)
