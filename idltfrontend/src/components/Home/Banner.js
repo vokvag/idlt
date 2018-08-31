@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import logo from '../LogoBiggrey.png';
+import logo from './LogoBiggrey.png';
 
 const Banner = props => {
 
