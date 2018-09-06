@@ -1,0 +1,42 @@
+version: '3'
+
+services:
+    db:
+        container_name: postgres
+        image: postgres
+        environment:
+            POSTGRES_PASSWORD: password123
+        ports:
+            - "5432:5432"
+            # (HOST:CONTAINER)
+        volumes:
+            - pgdata:/var/lib/postgresql/data/
+
+    nginx:
+        container_name: nginx-container
+        build: ./nginx
+        restart: always
+        ports:
+            - "8080:80"
+        volumes:
+            - api_data:/idlt_api
+            - ./log:/var/log/nginx
+        depends_on:
+            - api
+
+    api:
+        container_name: api-container
+        build: ./idltserver
+        restart: on-failure
+        # command: uwsgi --emperor uwsgi.ini
+        command: uwsgi --ini uwsgi.ini
+        ports:
+            - "8000:8000"
+        volumes:
+            - api_data:/idlt_api
+        depends_on:
+            - db
+
+volumes:
+    api_data:
+    pgdata:
