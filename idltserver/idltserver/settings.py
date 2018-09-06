@@ -26,7 +26,14 @@ SECRET_KEY = 'd4b%592j-0qqy^f*o5w)#opttan5q4$p#09-1)e__pp2vzm19b'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    'www.idlt.xyz',
+    'idlt.xyz',
+    'localhost',
+    '0.0.0.0',
+    '127.0.0.1',
+    '[::1]'
+]
 
 
 # Application definition
@@ -92,7 +99,7 @@ DATABASES = {
         'USER': 'idltadmin',
         'PASSWORD': 'idolikethis',
         'HOST': 'localhost',
-        'PORT': '',
+        'PORT': 5432,
     }
 }
 
