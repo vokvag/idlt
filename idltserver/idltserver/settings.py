@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 """
 
 import os
-import psycopg2.extensions
+
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -26,15 +26,15 @@ SECRET_KEY = 'd4b%592j-0qqy^f*o5w)#opttan5q4$p#09-1)e__pp2vzm19b'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = [
-    'www.idlt.xyz',
-    'idlt.xyz',
-    'localhost',
-    '0.0.0.0',
-    '127.0.0.1',
-    '[::1]'
-]
-
+# ALLOWED_HOSTS = [
+#     'www.idlt.xyz',
+#     'idlt.xyz',
+#     'localhost',
+#     '0.0.0.0',
+#     '127.0.0.1',
+#     '[::1]'
+# ]
+ALLOWED_HOSTS=['*']
 
 # Application definition
 
@@ -92,16 +92,28 @@ WSGI_APPLICATION = 'idltserver.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#         'NAME': 'idlt',
+#         'USER': 'idltadmin',
+#         'PASSWORD': 'idolikethis',
+#         'HOST': 'localhost',
+#         'PORT': 5678,
+#     }
+# }
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'idlt',
-        'USER': 'idltadmin',
-        'PASSWORD': 'idolikethis',
-        'HOST': 'localhost',
-        'PORT': 5432,
+        'NAME': 'postgres',
+        'USER': 'postgres',
+        'PASSWORD': 'password123',
+        'HOST': 'db',
+        'PORT': 5432
     }
 }
+
 
 
 # Password validation
@@ -145,7 +157,7 @@ STATIC_URL = '/static/'
 CORS_ORIGIN_WHITELIST = (
     '0.0.0.0:4000',
     'localhost:4000',
-    '127.0.0.1:4000',
+    '127.0.0.1:4000'
 )
 
 AUTH_USER_MODEL = 'authentication.User'
