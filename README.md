@@ -351,7 +351,7 @@ only option `no` is detected
 
 No permission required, returns all [Articles](#article)
 
-###Create the article of Doc
+### Create the article of Doc
 
 `POST /modifyarticle`
 
@@ -366,13 +366,13 @@ No permission required, returns all [Articles](#article)
 ```
 Admin required, returns the new [Article](#article)
 
-###Delete the article of Doc
+### Delete the article of Doc
 
 `DELETE /modifyarticle/:id`
 
 Admin required, returns success or errors(#article)
 
-###Update the article of Doc
+### Update the article of Doc
 
 `PUT /updatearticle/:plwc`
 
