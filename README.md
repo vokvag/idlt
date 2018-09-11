@@ -201,6 +201,48 @@ Filter by second Programming language:
 
 No authentication required, returns a [category](#category)
 
+### Create the shared Categories
+
+`POST /modifycategory`
+
+```JSON
+{
+    "category":
+    {
+	    "name": "new5",
+	    "nameslug": "new5",
+	    "sort_order": "3",
+	    "parentcategory": "24"
+    }
+}
+```
+
+Admin required, returns the new [Category](#category)
+
+### Update the shared Categories
+
+`PUT /modifycategory/:nameslug`
+
+```JSON
+{
+    "category":
+    {
+	    "name": "new5",
+	    "nameslug": "new5",
+	    "sort_order": "3",
+	    "parentcategory": "24"
+    }
+}
+```
+
+Admin required, returns the new [Category](#category)
+
+### Delete the shared Categories
+
+`DELETE /modifycategory/:nameslug`
+
+Admin required, returns success or error(#category)
+
 ### Get the docs
 
 `GET /api/articles`
@@ -306,6 +348,45 @@ only option `no` is detected
     }
 }
 ```
+
+No permission required, returns all [Articles](#article)
+
+###Create the article of Doc
+
+`POST /modifyarticle`
+
+```JSON
+{
+	"article": {
+		"plwc": "41",
+		"title": "newnew41",
+		"body": "newnew41414141414111111111111111111111111111111111111111"
+	}
+}
+```
+Admin required, returns the new [Article](#article)
+
+###Delete the article of Doc
+
+`DELETE /modifyarticle/:id`
+
+Admin required, returns success or errors(#article)
+
+###Update the article of Doc
+
+`PUT /updatearticle/:plwc`
+
+```JSON
+{
+	"article": {
+		"plwc": "41",
+		"title": "newnew41",
+		"body": "newnew41414141414111111111111111111111111111111111111111"
+	}
+}
+```
+
+Admin required, returns the updated [Article](#article)
 
 ### Bookmark the bullet point of docs
 
