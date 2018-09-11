@@ -2,6 +2,11 @@
 
 AN AWESOME DOCUMENTATION USED TO COMPARE DIFFERENT PROGRAMMING LANGUAGES AND HELP YOUR KNOWLEDGE TRANSFER.
 
+## Location
+Still in testing and frontend developing.
+The demo backend is now temporarily located at api.idlt.xyz:8080.
+If anyone want to join me to build such a thing. mail to vokvag@hotmail.com. Cheers!!
+
 ## Endpoints
 ### Authentication:
 
