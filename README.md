@@ -401,10 +401,6 @@ haven't finished yet
 
 haven't finished yet
 
-### create and update docs in profiles
-
-haven't finished yet
-
 ### add admin users for website
 
 haven't finished yet
